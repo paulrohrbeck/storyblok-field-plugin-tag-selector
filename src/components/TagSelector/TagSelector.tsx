@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import './styles.css'
 
 interface Tag {
   name: string
@@ -24,6 +25,7 @@ const TagSelector = ({
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   const fetchTags = useCallback(async () => {
     if (!accessToken) return
@@ -74,6 +76,26 @@ const TagSelector = ({
     }
   }, [accessToken, fetchTags])
 
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isDropdownOpen])
+
   const toggleTag = (tagName: string) => {
     const newSelectedTags = selectedTags.includes(tagName)
       ? selectedTags.filter((tag) => tag !== tagName)
@@ -87,13 +109,13 @@ const TagSelector = ({
   }
 
   return (
-    <div className="tag-selector">
-      <h2>Tag Selector</h2>
-
+    <div
+      className="tag-selector"
+      ref={dropdownRef}
+    >
       {/* Selected Tags Display */}
       {selectedTags.length > 0 && (
         <div className="selected-tags">
-          <h3>Selected Tags:</h3>
           <div className="tag-list">
             {selectedTags.map((tag) => (
               <span
@@ -123,7 +145,7 @@ const TagSelector = ({
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           disabled={isLoading}
         >
-          {isLoading ? 'Loading tags...' : 'Select Tags'}
+          {isLoading ? 'Loading tags...' : 'Select tags'}
           <span className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>
             ▼
           </span>

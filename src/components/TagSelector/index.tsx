@@ -1,4 +1,4 @@
-import './example.css'
+import './styles.css'
 import TagSelector from './TagSelector'
 import { FunctionComponent } from 'react'
 import { useFieldPlugin } from '@storyblok/field-plugin/react'

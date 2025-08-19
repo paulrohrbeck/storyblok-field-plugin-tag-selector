@@ -6,24 +6,11 @@
   border: 1px solid var(--light);
   padding: 15px;
   border-radius: 5px;
-}
-
-h2 {
-  font-size: 0.875rem;
-  line-height: 1.125rem;
-  font-weight: 500;
-  margin: 1rem 0;
-}
-
-h3 {
-  font-size: 0.75rem;
-  line-height: 1rem;
-  font-weight: 500;
-  margin: 0.75rem 0 0.5rem 0;
+  font-family: Roboto, sans-serif;
 }
 
 .btn {
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 500;
   padding: 0.8125rem 1rem;
   background: transparent;
@@ -35,7 +22,7 @@ h3 {
 
 .btn-small {
   padding: 0.5rem 0.75rem;
-  font-size: 0.75rem;
+  font-size: 12px;
 }
 
 .w-full {
@@ -84,7 +71,7 @@ h3 {
   color: #1976d2;
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
-  font-size: 0.75rem;
+  font-size: 12px;
   font-weight: 500;
 }
 
@@ -154,7 +141,7 @@ h3 {
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 12px;
   transition: background-color 0.2s ease-in-out;
 }
 
@@ -170,7 +157,7 @@ h3 {
 
 .tag-count {
   margin-left: 0.25rem;
-  font-size: 0.75rem;
+  font-size: 10px;
   color: #666;
   font-weight: normal;
 }
@@ -183,14 +170,14 @@ h3 {
 
 .error-message p {
   margin: 0 0 0.5rem 0;
-  font-size: 0.875rem;
+  font-size: 12px;
 }
 
 .no-tags {
   padding: 1rem;
   text-align: center;
   color: #666;
-  font-size: 0.875rem;
+  font-size: 12px;
 }
 
 .config-notice {
@@ -200,7 +187,7 @@ h3 {
   border: 1px solid #ffeaa7;
   border-radius: 0.3125rem;
   color: #856404;
-  font-size: 0.75rem;
+  font-size: 12px;
 }
 
 .config-notice p {
