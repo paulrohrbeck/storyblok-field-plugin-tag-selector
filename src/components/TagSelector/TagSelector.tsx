@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import './styles.css'
 
 interface Tag {
@@ -24,8 +24,8 @@ const TagSelector = ({
   const [tags, setTags] = useState<Tag[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filteredTags, setFilteredTags] = useState<Tag[]>([])
 
   const fetchTags = useCallback(async () => {
     if (!accessToken) return
@@ -76,25 +76,17 @@ const TagSelector = ({
     }
   }, [accessToken, fetchTags])
 
-  // Handle click outside to close dropdown
+  // Filter tags based on search term
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false)
-      }
+    if (!searchTerm.trim()) {
+      setFilteredTags(tags)
+    } else {
+      const filtered = tags.filter((tag) =>
+        tag.name.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
+      setFilteredTags(filtered)
     }
-
-    if (isDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isDropdownOpen])
+  }, [tags, searchTerm])
 
   const toggleTag = (tagName: string) => {
     const newSelectedTags = selectedTags.includes(tagName)
@@ -109,10 +101,28 @@ const TagSelector = ({
   }
 
   return (
-    <div
-      className="tag-selector"
-      ref={dropdownRef}
-    >
+    <div className="tag-selector">
+      {/* Error Display */}
+      {error && (
+        <div className="error-message">
+          <p>{error}</p>
+          <button
+            type="button"
+            className="btn btn-small"
+            onClick={() => fetchTags()}
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      {/* Configuration Notice */}
+      {!accessToken && (
+        <div className="config-notice">
+          <p>Configure your Storyblok Access Token to load tags.</p>
+        </div>
+      )}
+
       {/* Selected Tags Display */}
       {selectedTags.length > 0 && (
         <div className="selected-tags">
@@ -137,66 +147,52 @@ const TagSelector = ({
         </div>
       )}
 
-      {/* Dropdown */}
-      <div className="dropdown-container">
-        <button
-          type="button"
-          className="dropdown-trigger btn w-full"
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Loading tags...' : 'Select tags'}
-          <span className={`dropdown-arrow ${isDropdownOpen ? 'open' : ''}`}>
-            ▼
-          </span>
-        </button>
+      {/* Tags List */}
+      {isLoading ? (
+        <div className="loading-state">
+          <p>Loading tags...</p>
+        </div>
+      ) : tags.length === 0 ? (
+        <div className="no-tags">No tags available</div>
+      ) : (
+        <div className="tag-options-list">
+          <h3 className="available-tags-title">
+            Available Tags ({filteredTags.length}):
+          </h3>
 
-        {isDropdownOpen && (
-          <div className="dropdown-menu">
-            {error ? (
-              <div className="error-message">
-                <p>{error}</p>
-                <button
-                  type="button"
-                  className="btn btn-small"
-                  onClick={() => fetchTags()}
-                >
-                  Retry
-                </button>
-              </div>
-            ) : tags.length === 0 ? (
-              <div className="no-tags">
-                {isLoading ? 'Loading...' : 'No tags available'}
-              </div>
+          {/* Search Field */}
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search tags..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+          </div>
+
+          <div className="tag-options">
+            {filteredTags.length === 0 ? (
+              <div className="no-search-results">No matching tags found</div>
             ) : (
-              <div className="tag-options">
-                {tags.map((tag, index) => (
-                  <label
-                    key={`${tag.name}-${index}`}
-                    className="tag-option"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedTags.includes(tag.name)}
-                      onChange={() => toggleTag(tag.name)}
-                    />
-                    <span className="checkmark"></span>
-                    {tag.name}
-                    {tag.taggings_count > 0 && (
-                      <span className="tag-count">({tag.taggings_count})</span>
-                    )}
-                  </label>
-                ))}
-              </div>
+              filteredTags.map((tag, index) => (
+                <label
+                  key={`${tag.name}-${index}`}
+                  className="tag-option"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedTags.includes(tag.name)}
+                    onChange={() => toggleTag(tag.name)}
+                  />
+                  <span className="tag-name">{tag.name}</span>
+                  {tag.taggings_count > 0 && (
+                    <span className="tag-count">({tag.taggings_count})</span>
+                  )}
+                </label>
+              ))
             )}
           </div>
-        )}
-      </div>
-
-      {/* Configuration Helper */}
-      {!accessToken && (
-        <div className="config-notice">
-          <p>Configure your Storyblok Access Token to load tags.</p>
         </div>
       )}
     </div>

@@ -51,6 +51,11 @@
 /* Tag Selector Styles */
 .tag-selector {
   margin: 0;
+  box-sizing: border-box;
+}
+
+.tag-selector * {
+  box-sizing: border-box;
 }
 
 .selected-tags {
@@ -97,56 +102,84 @@
   background-color: rgba(25, 118, 210, 0.1);
 }
 
-.dropdown-container {
-  position: relative;
+/* Search Container */
+.search-container {
+  margin-bottom: 0.5rem;
 }
 
-.dropdown-trigger {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  text-align: left;
-}
-
-.dropdown-arrow {
-  transition: transform 0.2s ease-in-out;
-  font-size: 0.75rem;
-}
-
-.dropdown-arrow.open {
-  transform: rotate(180deg);
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: white;
+.search-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.75rem;
+  font-size: 12px;
   border: 1px solid var(--light);
   border-radius: 0.3125rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  max-height: 200px;
-  overflow-y: auto;
+  background: white;
+  outline: none;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.search-input:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.search-input::placeholder {
+  color: #999;
+  font-size: 12px;
+}
+
+/* Section Titles */
+.selected-tags-title,
+.available-tags-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 0.5rem 0;
+}
+
+/* Loading State */
+.loading-state {
+  padding: 1rem;
+  text-align: center;
+  color: #666;
+  font-size: 12px;
+}
+
+/* Tag Options List */
+.tag-options-list {
+  margin-top: 1rem;
 }
 
 .tag-options {
-  padding: 0.5rem 0;
+  border: 1px solid var(--light);
+  border-radius: 0.3125rem;
+  background: white;
+  max-height: 129px;
+  overflow-y: auto;
 }
 
 .tag-option {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem;
   cursor: pointer;
   font-size: 12px;
+  border-bottom: 1px solid #f5f5f5;
   transition: background-color 0.2s ease-in-out;
 }
 
+.tag-option:last-child {
+  border-bottom: none;
+}
+
 .tag-option:hover {
-  background-color: var(--light_75);
+  background-color: #f8f9fa;
+}
+
+.tag-name {
+  flex-grow: 1;
 }
 
 .tag-option input[type='checkbox'] {
@@ -178,6 +211,14 @@
   text-align: center;
   color: #666;
   font-size: 12px;
+}
+
+.no-search-results {
+  padding: 1rem;
+  text-align: center;
+  color: #666;
+  font-size: 12px;
+  font-style: italic;
 }
 
 .config-notice {
