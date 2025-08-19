@@ -168,6 +168,13 @@ h3 {
   margin: 0;
 }
 
+.tag-count {
+  margin-left: 0.25rem;
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: normal;
+}
+
 .error-message {
   padding: 1rem;
   text-align: center;

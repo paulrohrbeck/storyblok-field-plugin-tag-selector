@@ -1,9 +1,9 @@
 import _FieldPlugin from './components/FieldPlugin'
-import FieldPluginExample from './components/FieldPluginExample'
+import TagSelector from './components/TagSelector'
 import { FunctionComponent } from 'react'
 
 const App: FunctionComponent = () => {
-  return <FieldPluginExample />
+  return <TagSelector />
 }
 
 export default App

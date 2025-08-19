@@ -1,22 +1,24 @@
 import { useState, useEffect, useCallback } from 'react'
 
 interface Tag {
-  id: number
   name: string
+  taggings_count: number
 }
 
 interface TagSelectorProps {
   selectedTags: string[]
   onTagsChange: (tags: string[]) => void
-  spaceId?: string
   accessToken?: string
+  startsWithFilter?: string
+  version?: 'draft' | 'published'
 }
 
 const TagSelector = ({
   selectedTags,
   onTagsChange,
-  spaceId,
   accessToken,
+  startsWithFilter,
+  version = 'published',
 }: TagSelectorProps) => {
   const [tags, setTags] = useState<Tag[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -24,17 +26,27 @@ const TagSelector = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const fetchTags = useCallback(async () => {
-    if (!spaceId || !accessToken) return
+    if (!accessToken) return
 
     setIsLoading(true)
     setError(null)
 
     try {
+      // Build query parameters
+      const params = new URLSearchParams({
+        token: accessToken,
+        version: version,
+      })
+
+      if (startsWithFilter) {
+        params.append('starts_with', startsWithFilter)
+      }
+
       const response = await fetch(
-        `https://mapi.storyblok.com/v1/spaces/${spaceId}/tags/`,
+        `https://api.storyblok.com/v2/cdn/tags?${params.toString()}`,
         {
           headers: {
-            Authorization: accessToken,
+            Accept: 'application/json',
             'Content-Type': 'application/json',
           },
         },
@@ -54,13 +66,13 @@ const TagSelector = ({
     } finally {
       setIsLoading(false)
     }
-  }, [spaceId, accessToken])
+  }, [accessToken, startsWithFilter, version])
 
   useEffect(() => {
-    if (spaceId && accessToken) {
+    if (accessToken) {
       fetchTags()
     }
-  }, [spaceId, accessToken, fetchTags])
+  }, [accessToken, fetchTags])
 
   const toggleTag = (tagName: string) => {
     const newSelectedTags = selectedTags.includes(tagName)
@@ -136,9 +148,9 @@ const TagSelector = ({
               </div>
             ) : (
               <div className="tag-options">
-                {tags.map((tag) => (
+                {tags.map((tag, index) => (
                   <label
-                    key={tag.id}
+                    key={`${tag.name}-${index}`}
                     className="tag-option"
                   >
                     <input
@@ -148,6 +160,9 @@ const TagSelector = ({
                     />
                     <span className="checkmark"></span>
                     {tag.name}
+                    {tag.taggings_count > 0 && (
+                      <span className="tag-count">({tag.taggings_count})</span>
+                    )}
                   </label>
                 ))}
               </div>
@@ -157,11 +172,9 @@ const TagSelector = ({
       </div>
 
       {/* Configuration Helper */}
-      {(!spaceId || !accessToken) && (
+      {!accessToken && (
         <div className="config-notice">
-          <p>
-            Configure your Storyblok Space ID and Access Token to load tags.
-          </p>
+          <p>Configure your Storyblok Access Token to load tags.</p>
         </div>
       )}
     </div>

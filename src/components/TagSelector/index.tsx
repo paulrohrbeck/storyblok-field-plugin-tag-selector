@@ -20,16 +20,18 @@ const FieldPlugin: FunctionComponent = () => {
   }
 
   // Extract configuration from field options
-  const spaceId = data.options?.spaceId
-  const accessToken = data.options?.accessToken
+  const accessToken = data.token || data.options?.token
+  const startsWithFilter = data.options?.startsWithFilter
+  const version = data.options?.version || 'published'
 
   return (
     <div className="container">
       <TagSelector
         selectedTags={data.content || []}
         onTagsChange={handleTagsChange}
-        spaceId={spaceId}
         accessToken={accessToken}
+        startsWithFilter={startsWithFilter}
+        version={version as 'draft' | 'published'}
       />
     </div>
   )
