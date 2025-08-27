@@ -38,6 +38,7 @@ const TagSelector = ({
       const params = new URLSearchParams({
         token: accessToken,
         version: version,
+        timestamp: Date.now().toString(), // Add timestamp to prevent caching
       })
 
       if (startsWithFilter) {
@@ -50,6 +51,9 @@ const TagSelector = ({
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            Pragma: 'no-cache',
+            Expires: '0',
           },
         },
       )
