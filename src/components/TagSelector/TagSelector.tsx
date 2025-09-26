@@ -26,6 +26,7 @@ const TagSelector = ({
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [filteredTags, setFilteredTags] = useState<Tag[]>([])
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const fetchTags = useCallback(async () => {
     if (!accessToken) return
@@ -38,7 +39,6 @@ const TagSelector = ({
       const params = new URLSearchParams({
         token: accessToken,
         version: version,
-        timestamp: Date.now().toString(), // Add timestamp to prevent caching
       })
 
       if (startsWithFilter) {
@@ -104,6 +104,15 @@ const TagSelector = ({
     onTagsChange(selectedTags.filter((tag) => tag !== tagName))
   }
 
+  const handleExpand = () => {
+    setIsExpanded(true)
+  }
+
+  const handleCollapse = () => {
+    setIsExpanded(false)
+    setSearchTerm('') // Clear search when collapsing
+  }
+
   return (
     <div className="tag-selector">
       {/* Error Display */}
@@ -151,52 +160,89 @@ const TagSelector = ({
         </div>
       )}
 
-      {/* Tags List */}
-      {isLoading ? (
-        <div className="loading-state">
-          <p>Loading tags...</p>
+      {/* Filter by tag section */}
+
+      {/* Collapsed state - dropdown-like selector */}
+      {!isExpanded && (
+        <div
+          className="tag-selector-dropdown"
+          onClick={handleExpand}
+        >
+          <span className="dropdown-text">
+            {selectedTags.length > 0
+              ? `${selectedTags.length} tag${
+                  selectedTags.length > 1 ? 's' : ''
+                } selected`
+              : 'Choose one or more...'}
+          </span>
+          <span className="dropdown-arrow">▼</span>
         </div>
-      ) : tags.length === 0 ? (
-        <div className="no-tags">No tags available</div>
-      ) : (
-        <div className="tag-options-list">
-          <h3 className="available-tags-title">
-            Available Tags ({filteredTags.length}):
-          </h3>
+      )}
 
-          {/* Search Field */}
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search tags..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-          </div>
-
-          <div className="tag-options">
-            {filteredTags.length === 0 ? (
-              <div className="no-search-results">No matching tags found</div>
-            ) : (
-              filteredTags.map((tag, index) => (
-                <label
-                  key={`${tag.name}-${index}`}
-                  className="tag-option"
+      {/* Expanded state - show the full tag interface */}
+      {isExpanded && (
+        <div className="tag-options-expanded">
+          {isLoading ? (
+            <div className="loading-state">
+              <p>Loading tags...</p>
+            </div>
+          ) : tags.length === 0 ? (
+            <div className="no-tags">No tags available</div>
+          ) : (
+            <div className="tag-options-list">
+              <div className="expanded-header">
+                <h4 className="available-tags-title">
+                  Available Tags ({filteredTags.length}):
+                </h4>
+                <button
+                  type="button"
+                  className="collapse-button"
+                  onClick={handleCollapse}
+                  aria-label="Collapse tag selector"
                 >
-                  <input
-                    type="checkbox"
-                    checked={selectedTags.includes(tag.name)}
-                    onChange={() => toggleTag(tag.name)}
-                  />
-                  <span className="tag-name">{tag.name}</span>
-                  {tag.taggings_count > 0 && (
-                    <span className="tag-count">({tag.taggings_count})</span>
-                  )}
-                </label>
-              ))
-            )}
-          </div>
+                  ▲
+                </button>
+              </div>
+
+              {/* Search Field */}
+              <div className="search-container">
+                <input
+                  type="text"
+                  placeholder="Search tags..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input"
+                />
+              </div>
+
+              <div className="tag-options">
+                {filteredTags.length === 0 ? (
+                  <div className="no-search-results">
+                    No matching tags found
+                  </div>
+                ) : (
+                  filteredTags.map((tag, index) => (
+                    <label
+                      key={`${tag.name}-${index}`}
+                      className="tag-option"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedTags.includes(tag.name)}
+                        onChange={() => toggleTag(tag.name)}
+                      />
+                      <span className="tag-name">{tag.name}</span>
+                      {tag.taggings_count > 0 && (
+                        <span className="tag-count">
+                          ({tag.taggings_count})
+                        </span>
+                      )}
+                    </label>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

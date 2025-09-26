@@ -1,4 +1,3 @@
-import _FieldPlugin from './components/FieldPlugin'
 import TagSelector from './components/TagSelector'
 import { FunctionComponent } from 'react'
 

@@ -25,15 +25,13 @@ const FieldPlugin: FunctionComponent = () => {
   const version = data.options?.version || 'published'
 
   return (
-    <div className="container">
-      <TagSelector
-        selectedTags={data.content || []}
-        onTagsChange={handleTagsChange}
-        accessToken={accessToken}
-        startsWithFilter={startsWithFilter}
-        version={version as 'draft' | 'published'}
-      />
-    </div>
+    <TagSelector
+      selectedTags={data.content || []}
+      onTagsChange={handleTagsChange}
+      accessToken={accessToken}
+      startsWithFilter={startsWithFilter}
+      version={version as 'draft' | 'published'}
+    />
   )
 }
 

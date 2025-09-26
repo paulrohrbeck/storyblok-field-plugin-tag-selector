@@ -1,14 +1,4 @@
 /*Layout Styles*/
-.container {
-  max-width: 22rem;
-  margin: 0 auto;
-  background-color: #ffffff;
-  border: 1px solid var(--light);
-  padding: 15px;
-  border-radius: 5px;
-  font-family: Roboto, sans-serif;
-}
-
 .btn {
   font-size: 14px;
   font-weight: 500;
@@ -147,10 +137,6 @@
 }
 
 /* Tag Options List */
-.tag-options-list {
-  margin-top: 1rem;
-}
-
 .tag-options {
   border: 1px solid var(--light);
   border-radius: 0.3125rem;
@@ -233,4 +219,72 @@
 
 .config-notice p {
   margin: 0;
+}
+
+/* Collapsed dropdown-style selector */
+.tag-selector-dropdown {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border: 1px solid var(--light);
+  border-radius: 0.3125rem;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-size: 12px;
+}
+
+.tag-selector-dropdown:hover {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.dropdown-text {
+  color: #666;
+  font-size: 14px;
+}
+
+.dropdown-arrow {
+  color: #666;
+  font-size: 10px;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Expanded state styles */
+.tag-options-expanded {
+  border: 1px solid var(--light);
+  border-radius: 0.3125rem;
+  background: white;
+  padding: 0.75rem;
+}
+
+.expanded-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.expanded-header h4 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.collapse-button {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.collapse-button:hover {
+  background-color: #f8f9fa;
+  color: #333;
 }
